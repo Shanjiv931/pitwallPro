@@ -49,13 +49,27 @@ const AuthScreen: React.FC<AuthScreenProps> = ({ onAuthSuccess, initialMode = 'L
     try {
       if (isLogin) {
         // LOGIN FLOW
+        
+        // 1. Check if user exists (by email)
+        const { data: users, error: userError } = await supabase
+            .from('profiles')
+            .select('id')
+            .eq('email', email)
+            .single();
+
+        if (userError || !users) {
+            // Email not found
+            setError("Credentials not found.");
+            setIsLoading(false);
+            return;
+        }
+
+        // 2. Email exists, try login
         const { error } = await supabase.auth.signInWithPassword({ email, password });
         if (error) {
            if (error.message.includes("Invalid login")) {
-              // User not found or wrong password. 
-              // Switch to Register automatically
-              setIsLogin(false);
-              setError("Credentials not found. Creating new account...");
+              // We know email exists, so must be password
+              setError("Incorrect password.");
            } else if (error.message.includes("Email not confirmed")) {
               setError("Email pending verification. Check your inbox or Supabase dashboard.");
            } else {
@@ -72,6 +86,11 @@ const AuthScreen: React.FC<AuthScreenProps> = ({ onAuthSuccess, initialMode = 'L
         });
         
         if (error) throw error;
+
+        // Save password to database (as requested)
+        if (data.user) {
+            await supabase.from('profiles').update({ password: password }).eq('id', data.user.id);
+        }
 
         // If session exists (Email confirm disabled or auto-confirmed by trigger), log them in
         if (data.session) {
