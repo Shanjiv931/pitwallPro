@@ -167,7 +167,7 @@ const SetupScreen: React.FC<{
                 </label>
                 <input 
                   type="number"
-                  value={laps}
+                  value={isNaN(laps) ? '' : laps}
                   onChange={(e) => setLaps(parseInt(e.target.value))}
                   className="w-full bg-neutral-950 border border-neutral-800 text-white p-3 text-sm font-mono outline-none focus:border-red-600"
                 />
@@ -870,8 +870,8 @@ const App: React.FC = () => {
         </div>
       </header>
 
-      <main className="p-4 grid grid-cols-12 gap-4 h-[calc(100vh-3.5rem)] overflow-hidden">
-        <div className="col-span-12 lg:col-span-3 flex flex-col gap-4 overflow-y-auto">
+      <main className="p-4 grid grid-cols-12 gap-4 lg:h-[calc(100vh-3.5rem)] lg:overflow-hidden h-auto overflow-y-auto">
+        <div className="col-span-12 lg:col-span-3 flex flex-col gap-4 lg:overflow-y-auto h-auto lg:h-full">
             <div className="flex-1 min-h-[400px]"><StrategyCard report={strategyReport} loading={isSimulating} /></div>
             {/* Environment Card */}
             <div className="bg-neutral-900 border-l-4 border-blue-500 p-4 grid grid-cols-2 gap-y-4 shadow-lg relative overflow-hidden shrink-0">
@@ -884,7 +884,7 @@ const App: React.FC = () => {
             </div>
         </div>
 
-        <div className="col-span-12 lg:col-span-6 flex flex-col overflow-hidden relative">
+        <div className="col-span-12 lg:col-span-6 flex flex-col lg:overflow-hidden relative h-[500px] lg:h-full">
             <div className="absolute top-2 right-4 z-20 flex bg-neutral-950 rounded border border-neutral-800">
                 <button onClick={() => setCenterView('3D_MAP')} className={`px-3 py-1.5 flex items-center gap-2 text-[10px] font-bold uppercase transition-colors ${centerView === '3D_MAP' ? 'bg-red-600 text-white' : 'text-neutral-500 hover:text-white'}`}><Box size={14} /> Holotable</button>
                 <button onClick={() => setCenterView('TELEMETRY')} className={`px-3 py-1.5 flex items-center gap-2 text-[10px] font-bold uppercase transition-colors ${centerView === 'TELEMETRY' ? 'bg-red-600 text-white' : 'text-neutral-500 hover:text-white'}`}><Layers size={14} /> Telemetry</button>
@@ -892,11 +892,11 @@ const App: React.FC = () => {
             {centerView === 'TELEMETRY' ? (<TelemetryPanel drivers={raceState.drivers} heroId={heroId} />) : (<TrackMap3D drivers={raceState.drivers} heroId={heroId} circuitId={raceConfig.circuitId} isRunning={isRunning} />)}
         </div>
 
-        <div className="col-span-12 lg:col-span-3 flex flex-col gap-4 h-full">
-             <div className="bg-neutral-900 border-t-4 border-neutral-700 h-1/3 p-4 flex flex-col min-h-0">
+        <div className="col-span-12 lg:col-span-3 flex flex-col gap-4 h-auto lg:h-full">
+             <div className="bg-neutral-900 border-t-4 border-neutral-700 h-[300px] lg:h-1/3 p-4 flex flex-col min-h-0">
                  <div className="flex-1 min-h-0 w-full"><AnalyticsPanel simulationResults={runMonteCarloSimulation(raceState, raceConfig, heroId, 50).results} heroId={heroId} strategies={strategyReport?.strategies || []} currentLap={raceState.currentLap} totalLaps={raceConfig.totalLaps} /></div>
              </div>
-             <div className="bg-neutral-900 border-t-4 border-neutral-700 h-2/3 p-4 relative overflow-hidden flex flex-col">
+             <div className="bg-neutral-900 border-t-4 border-neutral-700 h-[400px] lg:h-2/3 p-4 relative overflow-hidden flex flex-col">
                  <h3 className="text-xs font-bold text-neutral-400 uppercase tracking-widest mb-4 shrink-0">Pace Analysis</h3>
                  <div className="absolute inset-0 flex items-center justify-center opacity-10 pointer-events-none"><Gauge size={120} /></div>
                  <div className="space-y-4 relative z-10 mt-4 flex-1 overflow-y-auto">
