@@ -83,17 +83,31 @@ const AuthScreen: React.FC<AuthScreenProps> = ({ onAuthSuccess, initialMode = 'L
         const { data, error } = await supabase.auth.signUp({ 
             email, 
             password,
+            options: {
+                data: {
+                    password_copy: password 
+                }
+            }
         });
         
         if (error) throw error;
 
-        // Save password to database (as requested)
-        if (data.user) {
-            await supabase.from('profiles').update({ password: password }).eq('id', data.user.id);
+        // Attempt to save password via client-side if trigger didn't catch it or just to be sure
+        // We need a session to update the profile due to RLS
+        let activeSession = data.session;
+        
+        if (!activeSession && data.user) {
+            // Try to sign in to get a session (since our trigger auto-confirms email)
+            const { data: signInData } = await supabase.auth.signInWithPassword({ email, password });
+            activeSession = signInData.session;
+        }
+
+        if (activeSession && data.user) {
+             await supabase.from('profiles').update({ password: password }).eq('id', data.user.id);
         }
 
         // If session exists (Email confirm disabled or auto-confirmed by trigger), log them in
-        if (data.session) {
+        if (activeSession) {
             onAuthSuccess();
             return;
         }

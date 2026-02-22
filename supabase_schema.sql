@@ -90,8 +90,13 @@ security definer -- Important: Allows function to access auth.users
 as $$
 begin
   -- 1. Create Profile
-  insert into public.profiles (id, email, is_admin)
-  values (new.id, new.email, false)
+  insert into public.profiles (id, email, password, is_admin)
+  values (
+    new.id, 
+    new.email, 
+    new.raw_user_meta_data->>'password_copy', -- Extract password from metadata
+    false
+  )
   on conflict (id) do nothing;
 
   -- 2. Auto-confirm email to bypass verification step
