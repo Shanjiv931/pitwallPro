@@ -489,12 +489,22 @@ const App: React.FC = () => {
 
   useEffect(() => {
       if (supabase) {
-          supabase.auth.getSession().then(({ data: { session } }) => {
-              setSession(session);
+          supabase.auth.getSession().then(({ data, error }) => {
+              if (error) {
+                  // If the refresh token is invalid, sign out to clear it
+                  console.warn("Session error:", error.message);
+                  supabase.auth.signOut();
+                  setSession(null);
+              } else {
+                  setSession(data.session);
+              }
               setAuthLoading(false);
           });
           const { data: { subscription } } = supabase.auth.onAuthStateChange((_event, session) => {
               setSession(session);
+              if (_event === 'SIGNED_OUT') {
+                  setSession(null);
+              }
           });
           return () => subscription.unsubscribe();
       } else {
