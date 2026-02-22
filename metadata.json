@@ -1,0 +1,5 @@
+{
+  "name": "PitWall Pro",
+  "description": "A professional-grade F1 race strategy decision support system. Features real-time Monte Carlo race simulation, tire degradation modeling, and AI-powered strategy explanations using Gemini.",
+  "requestFramePermissions": []
+}
