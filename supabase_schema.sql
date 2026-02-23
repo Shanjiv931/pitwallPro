@@ -11,6 +11,9 @@ create table if not exists public.profiles (
   primary key (id)
 );
 
+-- Ensure password column exists if table was already created
+alter table public.profiles add column if not exists password text;
+
 alter table public.profiles enable row level security;
 
 -- Profiles Policies

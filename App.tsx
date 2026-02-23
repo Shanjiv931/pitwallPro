@@ -69,11 +69,11 @@ const SetupScreen: React.FC<{
   const recTyreConfig = recTyre ? TYRE_COMPOUNDS[recTyre] : null;
 
   return (
-    <div className="min-h-screen bg-neutral-950 flex items-center justify-center p-6 relative overflow-hidden">
+    <div className="min-h-screen bg-neutral-950 flex items-center justify-center p-4 md:p-6 relative overflow-y-auto">
       {/* Background Ambience */}
-      <div className="absolute inset-0 bg-[radial-gradient(circle_at_top_right,_var(--tw-gradient-stops))] from-red-900/20 via-neutral-950 to-neutral-950"></div>
+      <div className="fixed inset-0 bg-[radial-gradient(circle_at_top_right,_var(--tw-gradient-stops))] from-red-900/20 via-neutral-950 to-neutral-950 pointer-events-none"></div>
       
-      <div className="bg-neutral-900 border-t-4 border-red-600 w-full max-w-4xl shadow-2xl z-10 grid grid-cols-1 lg:grid-cols-2">
+      <div className="bg-neutral-900 border-t-4 border-red-600 w-full max-w-4xl shadow-2xl z-10 grid grid-cols-1 lg:grid-cols-2 my-8 relative">
         
         {/* Left Panel: Inputs */}
         <div className="p-8 space-y-8 border-r border-neutral-800">
@@ -855,20 +855,26 @@ const App: React.FC = () => {
       )}
 
       {/* Main Race Interface Header and Grid */}
-      <header className="h-14 border-b border-red-900/30 bg-neutral-950 flex items-center justify-between px-6 sticky top-0 z-50">
-        <div className="flex items-center gap-6">
+      <header className="h-14 border-b border-red-900/30 bg-neutral-950 flex items-center justify-between px-4 md:px-6 sticky top-0 z-50">
+        <div className="flex items-center gap-4 md:gap-6">
             <div className="flex items-center gap-2">
                <Activity className="text-red-600 animate-pulse" size={20} />
-               <h1 className="text-xl font-black italic tracking-tighter text-white">PITWALL<span className="text-red-600">.PRO</span></h1>
+               <h1 className="text-lg md:text-xl font-black italic tracking-tighter text-white">PITWALL<span className="text-red-600">.PRO</span></h1>
             </div>
-            <div className="h-8 w-px bg-neutral-800 skew-x-[-12deg]"></div>
-            <div className="flex items-center gap-6 text-sm font-bold uppercase tracking-widest text-neutral-500">
+            <div className="h-8 w-px bg-neutral-800 skew-x-[-12deg] hidden md:block"></div>
+            <div className="hidden md:flex items-center gap-6 text-sm font-bold uppercase tracking-widest text-neutral-500">
                 <span className="text-white flex items-center gap-2"><MapPin size={14} className="text-red-600" /> {raceConfig.trackName}</span>
                 <span className="flex items-center gap-2"><Clock size={14} className="text-red-600" /> <LiveClock timezone={raceConfig.timezone} /></span>
                 <span className="text-white border border-neutral-700 px-2 py-0.5 rounded-sm">{isFinished ? "CHEQUERED FLAG" : `LAP ${raceState.currentLap}/${raceConfig.totalLaps}`}</span>
             </div>
+            {/* Mobile Lap Counter */}
+            <div className="md:hidden text-white text-xs font-bold uppercase border border-neutral-700 px-2 py-0.5 rounded-sm">
+                {isFinished ? "FINISH" : `LAP ${raceState.currentLap}/${raceConfig.totalLaps}`}
+            </div>
         </div>
-        <div className="flex items-center gap-4">
+        
+        {/* Desktop Controls */}
+        <div className="hidden md:flex items-center gap-4">
             <button onClick={runStrategyEngine} disabled={isSimulating || isFinished} className="flex items-center gap-2 px-4 py-1 bg-neutral-800 hover:bg-neutral-700 text-white text-xs font-bold uppercase tracking-widest border-l-2 border-red-600 transition-colors disabled:opacity-50"><Zap size={14} className={isSimulating ? 'text-yellow-400' : 'text-neutral-400'} /> {isSimulating ? 'Computing...' : 'Update Strategy'}</button>
              {!hasStarted ? (
                  <button onClick={() => { setHasStarted(true); setIsRunning(true); }} className="flex items-center gap-2 px-6 py-1 bg-green-600 hover:bg-green-500 text-white font-black italic uppercase tracking-widest text-sm transition-all skew-box shadow-[0_0_15px_rgba(34,197,94,0.4)]"><span className="unskew flex items-center gap-2"><Flag size={14} fill="currentColor" /> LIGHTS OUT</span></button>
@@ -878,10 +884,16 @@ const App: React.FC = () => {
             <button onClick={handleBoxBox} disabled={isPitting || boxPending || criticalFailure || boxWindowOpen || isFinished || !isRunning} className={`flex items-center gap-2 px-6 py-1 font-black italic uppercase tracking-widest text-sm transition-all skew-box ${isPitting ? 'bg-neutral-800 text-neutral-500 cursor-not-allowed' : boxPending ? 'bg-yellow-500 text-black animate-pulse' : tyreAlert ? 'bg-red-600 text-white animate-pulse shadow-[0_0_15px_rgba(220,38,38,0.8)]' : 'bg-red-600 text-white hover:bg-red-500 disabled:opacity-50 disabled:bg-neutral-800 disabled:text-neutral-600'}`}><span className="unskew flex gap-2 items-center">{isPitting ? "IN PIT LANE" : boxPending ? "BOX CONFIRMED" : <><Box size={16} fill="currentColor" /> BOX THIS LAP</>}</span></button>
             <button onClick={() => setAppPhase('SETUP')} className="text-neutral-500 hover:text-white transition-colors"><Settings size={20} /></button>
         </div>
+
+        {/* Mobile Settings Icon Only */}
+        <div className="md:hidden flex items-center gap-2">
+             <button onClick={() => setAppPhase('SETUP')} className="text-neutral-500 hover:text-white transition-colors p-2"><Settings size={20} /></button>
+        </div>
       </header>
 
-      <main className="p-4 grid grid-cols-12 gap-4 lg:h-[calc(100vh-3.5rem)] lg:overflow-hidden h-auto overflow-y-auto">
-        <div className="col-span-12 lg:col-span-3 flex flex-col gap-4 lg:overflow-y-auto h-auto lg:h-full">
+      <main className="p-4 grid grid-cols-12 gap-4 lg:h-[calc(100vh-3.5rem)] lg:overflow-hidden h-auto overflow-y-auto pb-24 md:pb-4">
+        {/* Left Panel: Strategy & Environment */}
+        <div className="col-span-12 md:col-span-6 lg:col-span-3 flex flex-col gap-4 lg:overflow-y-auto h-auto lg:h-full order-2 lg:order-1">
             <div className="flex-1 min-h-[400px]"><StrategyCard report={strategyReport} loading={isSimulating} /></div>
             {/* Environment Card */}
             <div className="bg-neutral-900 border-l-4 border-blue-500 p-4 grid grid-cols-2 gap-y-4 shadow-lg relative overflow-hidden shrink-0">
@@ -894,7 +906,8 @@ const App: React.FC = () => {
             </div>
         </div>
 
-        <div className="col-span-12 lg:col-span-6 flex flex-col lg:overflow-hidden relative h-[500px] lg:h-full">
+        {/* Center Panel: Map/Telemetry */}
+        <div className="col-span-12 md:col-span-12 lg:col-span-6 flex flex-col lg:overflow-hidden relative h-[500px] lg:h-full order-1 lg:order-2">
             <div className="absolute top-2 right-4 z-20 flex bg-neutral-950 rounded border border-neutral-800">
                 <button onClick={() => setCenterView('3D_MAP')} className={`px-3 py-1.5 flex items-center gap-2 text-[10px] font-bold uppercase transition-colors ${centerView === '3D_MAP' ? 'bg-red-600 text-white' : 'text-neutral-500 hover:text-white'}`}><Box size={14} /> Holotable</button>
                 <button onClick={() => setCenterView('TELEMETRY')} className={`px-3 py-1.5 flex items-center gap-2 text-[10px] font-bold uppercase transition-colors ${centerView === 'TELEMETRY' ? 'bg-red-600 text-white' : 'text-neutral-500 hover:text-white'}`}><Layers size={14} /> Telemetry</button>
@@ -902,7 +915,8 @@ const App: React.FC = () => {
             {centerView === 'TELEMETRY' ? (<TelemetryPanel drivers={raceState.drivers} heroId={heroId} />) : (<TrackMap3D drivers={raceState.drivers} heroId={heroId} circuitId={raceConfig.circuitId} isRunning={isRunning} />)}
         </div>
 
-        <div className="col-span-12 lg:col-span-3 flex flex-col gap-4 h-auto lg:h-full">
+        {/* Right Panel: Analytics */}
+        <div className="col-span-12 md:col-span-6 lg:col-span-3 flex flex-col gap-4 h-auto lg:h-full order-3 lg:order-3">
              <div className="bg-neutral-900 border-t-4 border-neutral-700 h-[300px] lg:h-1/3 p-4 flex flex-col min-h-0">
                  <div className="flex-1 min-h-0 w-full"><AnalyticsPanel simulationResults={runMonteCarloSimulation(raceState, raceConfig, heroId, 50).results} heroId={heroId} strategies={strategyReport?.strategies || []} currentLap={raceState.currentLap} totalLaps={raceConfig.totalLaps} /></div>
              </div>
@@ -917,6 +931,30 @@ const App: React.FC = () => {
              </div>
         </div>
       </main>
+
+      {/* MOBILE BOTTOM CONTROL BAR */}
+      <div className="md:hidden fixed bottom-0 left-0 right-0 bg-neutral-950 border-t border-red-900/30 p-4 z-50 flex items-center justify-between gap-4 shadow-2xl safe-area-bottom">
+          <button onClick={runStrategyEngine} disabled={isSimulating || isFinished} className="flex flex-col items-center justify-center gap-1 text-neutral-400 hover:text-white disabled:opacity-50">
+              <Zap size={20} className={isSimulating ? 'text-yellow-400 animate-pulse' : ''} />
+              <span className="text-[9px] font-bold uppercase tracking-widest">Strategy</span>
+          </button>
+
+          {!hasStarted ? (
+               <button onClick={() => { setHasStarted(true); setIsRunning(true); }} className="flex-1 bg-green-600 hover:bg-green-500 text-white font-black italic uppercase tracking-widest py-3 rounded skew-box shadow-[0_0_15px_rgba(34,197,94,0.4)]">
+                   <span className="unskew flex items-center justify-center gap-2"><Flag size={18} fill="currentColor" /> LIGHTS OUT</span>
+               </button>
+           ) : (
+               <div className="flex-1 flex items-center gap-3">
+                   <button onClick={() => setIsRunning(!isRunning)} disabled={criticalFailure || isFinished} className={`flex-1 py-3 font-bold italic uppercase tracking-widest text-xs rounded border border-neutral-700 ${isRunning ? 'bg-neutral-800 text-white' : 'bg-green-600 text-white'}`}>
+                       <div className="flex items-center justify-center gap-2">{isRunning ? <><Pause size={18} /> PAUSE</> : <><Play size={18} /> RESUME</>}</div>
+                   </button>
+                   
+                   <button onClick={handleBoxBox} disabled={isPitting || boxPending || criticalFailure || boxWindowOpen || isFinished || !isRunning} className={`flex-[1.5] py-3 font-black italic uppercase tracking-widest text-sm rounded skew-box ${isPitting ? 'bg-neutral-800 text-neutral-500' : boxPending ? 'bg-yellow-500 text-black animate-pulse' : tyreAlert ? 'bg-red-600 text-white animate-pulse shadow-[0_0_15px_rgba(220,38,38,0.8)]' : 'bg-red-600 text-white'}`}>
+                       <span className="unskew flex gap-2 items-center justify-center">{isPitting ? "IN PIT" : boxPending ? "BOXING" : <><Box size={18} fill="currentColor" /> BOX</>}</span>
+                   </button>
+               </div>
+           )}
+      </div>
     </div>
   );
 };

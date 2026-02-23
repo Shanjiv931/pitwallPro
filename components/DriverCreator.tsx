@@ -256,12 +256,12 @@ const DriverAssessment: React.FC<DriverCreatorProps> = ({ onBack, onSuccess }) =
 
   if (phase === 'INTRO') {
       return (
-        <div className="min-h-screen bg-neutral-950 flex flex-col items-center justify-center p-6 text-center relative">
-            <button onClick={onBack} className="absolute top-6 left-6 text-neutral-500 hover:text-white flex items-center gap-2 uppercase font-bold text-xs tracking-widest">
+        <div className="min-h-screen bg-neutral-950 flex flex-col items-center justify-center p-6 text-center relative overflow-y-auto">
+            <button onClick={onBack} className="absolute top-6 left-6 text-neutral-500 hover:text-white flex items-center gap-2 uppercase font-bold text-xs tracking-widest z-10">
                 <Home size={16} /> Return to Garage
             </button>
 
-            <div className="max-w-2xl space-y-8 animate-in fade-in duration-700">
+            <div className="max-w-2xl space-y-8 animate-in fade-in duration-700 my-12">
                 <div className="flex justify-center">
                     <Brain size={64} className="text-red-600 animate-pulse" />
                 </div>
@@ -317,12 +317,12 @@ const DriverAssessment: React.FC<DriverCreatorProps> = ({ onBack, onSuccess }) =
       const hasAnswered = answers[q.id] !== undefined;
 
       return (
-        <div className="min-h-screen bg-neutral-950 flex flex-col p-6">
-            <div className="w-full h-1 bg-neutral-900 mb-8">
+        <div className="min-h-screen bg-neutral-950 flex flex-col p-4 md:p-6 overflow-y-auto">
+            <div className="w-full h-1 bg-neutral-900 mb-8 shrink-0">
                 <div className="h-full bg-red-600 transition-all duration-500" style={{ width: `${((currentQIndex + 1) / QUESTIONS.length) * 100}%` }}></div>
             </div>
 
-            <div className="flex-1 flex flex-col items-center justify-center max-w-4xl mx-auto w-full">
+            <div className="flex-1 flex flex-col items-center justify-start md:justify-center max-w-4xl mx-auto w-full py-4">
                 <div className="w-full mb-8">
                     <div className="flex justify-between items-center mb-4">
                         <span className="text-red-500 font-bold uppercase tracking-widest text-xs flex items-center gap-2">
@@ -404,7 +404,7 @@ const DriverAssessment: React.FC<DriverCreatorProps> = ({ onBack, onSuccess }) =
 
   if (phase === 'RESULTS' && calculateStats) {
       return (
-        <div className="min-h-screen bg-neutral-950 p-6">
+        <div className="min-h-screen bg-neutral-950 p-4 md:p-6 overflow-y-auto">
             <div className="max-w-6xl mx-auto">
                 <div className="flex justify-between items-center mb-8 border-b border-neutral-800 pb-6">
                     <div>

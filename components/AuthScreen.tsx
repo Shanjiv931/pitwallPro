@@ -124,12 +124,13 @@ const AuthScreen: React.FC<AuthScreenProps> = ({ onAuthSuccess, initialMode = 'L
   };
 
   return (
-    <div className="min-h-screen bg-neutral-950 flex items-center justify-center p-6 relative overflow-hidden">
+    <div className="min-h-screen bg-neutral-950 relative overflow-y-auto">
       {/* Background FX */}
-      <div className="absolute inset-0 bg-[url('https://www.transparenttextures.com/patterns/carbon-fibre.png')] opacity-20"></div>
-      <div className="absolute top-0 right-0 w-[500px] h-[500px] bg-red-600/10 blur-[120px] rounded-full pointer-events-none"></div>
+      <div className="fixed inset-0 bg-[url('https://www.transparenttextures.com/patterns/carbon-fibre.png')] opacity-20 pointer-events-none"></div>
+      <div className="fixed top-0 right-0 w-[500px] h-[500px] bg-red-600/10 blur-[120px] rounded-full pointer-events-none"></div>
 
-      <div className="w-full max-w-md bg-neutral-900 border-t-4 border-red-600 shadow-2xl relative z-10 p-8">
+      <div className="min-h-screen flex items-center justify-center p-6 relative z-10">
+        <div className="w-full max-w-md bg-neutral-900 border-t-4 border-red-600 shadow-2xl p-8">
          <div className="mb-8 text-center">
             <div className="flex justify-center mb-4">
                 <Activity className="text-red-600 h-12 w-12" />
@@ -211,6 +212,7 @@ const AuthScreen: React.FC<AuthScreenProps> = ({ onAuthSuccess, initialMode = 'L
             </button>
          </div>
       </div>
+    </div>
     </div>
   );
 };

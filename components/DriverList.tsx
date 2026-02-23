@@ -69,7 +69,7 @@ const DriverList: React.FC<DriverListProps> = ({ onBack, onAddNew, onContact }) 
   }
 
   return (
-    <div className="min-h-screen bg-neutral-950 text-neutral-200 p-6 overflow-y-auto relative">
+    <div className="min-h-screen bg-neutral-950 text-neutral-200 p-4 md:p-6 overflow-y-auto relative">
         {/* Admin Restriction Modal */}
         {showAdminAlert && (
             <div className="fixed inset-0 z-[100] bg-black/80 flex items-center justify-center p-6 backdrop-blur-sm animate-in fade-in duration-200">
